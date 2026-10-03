@@ -134,21 +134,11 @@
   const tag = document.getElementById('tag');
   const TARGET = 'BUSINESS SERVICES';
 
-  // общая вертикальная ось: зазор между U и 2, пробел между BUSINESS и SERVICES и «@» стоят на одной линии
-  const mail = document.querySelector('.mail');
+  // вертикальная ось: зазор между U и 2 и пробел между BUSINESS и SERVICES стоят на одной линии
   const axisX = () => { const r = svg.getBoundingClientRect(); return r.left + r.width / 2; };
   const charRect = (node, i) => {
     const rg = document.createRange(); rg.setStart(node, i); rg.setEnd(node, i + 1);
     return rg.getBoundingClientRect();
-  };
-  const alignMail = () => {
-    mail.style.transform = 'none';
-    const ls = parseFloat(getComputedStyle(mail).letterSpacing) || 0;
-    // текстовый узел, в котором стоит «@»
-    const w = document.createTreeWalker(mail, NodeFilter.SHOW_TEXT);
-    let n; while ((n = w.nextNode()) && !n.data.includes('@'));
-    const r = charRect(n, n.data.indexOf('@'));
-    mail.style.transform = `translateX(${axisX() - (r.left + (r.width - ls) / 2)}px)`;
   };
   let tagFinal = false;
   const alignTagFinal = () => {
@@ -159,7 +149,7 @@
     tag.style.transform = `translateX(${axisX() - gap}px)`;
     void tag.offsetWidth; tag.style.transition = '';
   };
-  const alignAxes = () => { alignMail(); if (tagFinal) alignTagFinal(); };
+  const alignAxes = () => { if (tagFinal) alignTagFinal(); };
   document.fonts.ready.then(alignAxes);
   addEventListener('resize', alignAxes);
 
