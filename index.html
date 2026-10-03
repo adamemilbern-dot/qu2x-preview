@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QU2X — Business Services</title>
+<meta name="description" content="QU2X Business Services">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#000; --fg:#fff; --dim:rgba(255,255,255,.62); --w:min(86vw,880px); }
+  * { box-sizing:border-box; margin:0; }
+  html,body { height:100%; }
+  body { background:var(--bg); color:var(--fg); font-family:'Orbitron',sans-serif;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-height:100vh; padding:24px 16px; text-align:center; overflow-x:hidden; }
+  main { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; }
+  #logo { width:var(--w); height:auto; overflow:visible; }
+  #logo .s { fill:var(--fg); opacity:0; }
+  #logo .on { opacity:1; }
+  #logo .tail { stroke:var(--bg); stroke-width:14; paint-order:stroke; stroke-linejoin:miter; stroke-miterlimit:4; }
+  #logo .cut { stroke:var(--bg); stroke-width:8; }
+  h1 { font-weight:400; font-size:calc(var(--w)*.036); letter-spacing:.5em; margin:calc(var(--w)*.075) 0 0 .5em;
+    white-space:pre; min-height:1.2em; visibility:hidden; }
+  footer { margin-top:clamp(20px,5vh,56px); display:flex; flex-direction:column; align-items:center; gap:24px; padding-bottom:12px; }
+  .mail { font-family:'Barlow',sans-serif; font-weight:500; font-size:calc(var(--w)*.037);
+    letter-spacing:.22em; margin-right:-.22em; cursor:text; -webkit-user-select:all; user-select:all; }
+  /* цифра «2» по высоте строчных букв (x-height Barlow = 0.72 высоты цифры) */
+  .mail .d { display:inline-block; font-size:.72em; letter-spacing:.306em; font-weight:600;
+    transform:scaleX(1.3); transform-origin:50% 50%; margin:0 .1em 0 .06em; }
+  hr { width:40px; border:0; border-top:1px solid var(--dim); }
+  small { font-family:'Barlow',sans-serif; font-weight:500; font-size:clamp(8px,.6vw,10px);
+    letter-spacing:.24em; color:var(--dim); text-transform:uppercase; }
+</style>
+<noscript><style>#tag{visibility:visible}</style></noscript>
+</head>
+<body>
+<main>
+  <svg id="logo" viewBox="0 0 893 232" role="img" aria-label="QU2X"></svg>
+  <h1 id="tag" aria-label="Business Services">BUSINESS SERVICES</h1>
+</main>
+<footer>
+  <span class="mail">contact@qu<span class="d">2</span>x.com</span>
+  <hr>
+  <small>© 2026 QU2X. All rights reserved.</small>
+</footer>
+<script>
+(() => {
+  const svg = document.getElementById('logo'), NS = 'http://www.w3.org/2000/svg';
+  const t = 30, W = 197, H = 232, STEP = 232;
+
+  const add = (tag, attrs, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e); return e;
+  };
+  // шестиугольные сегменты со скошенными концами
+  const h = (cx, cy, L) => [[-L/2,0],[-L/2+t/2,-t/2],[L/2-t/2,-t/2],[L/2,0],[L/2-t/2,t/2],[-L/2+t/2,t/2]]
+    .map(([x,y]) => `${cx+x},${cy+y}`).join(' ');
+  const v = (cx, cy, L) => [[0,-L/2],[t/2,-L/2+t/2],[t/2,L/2-t/2],[0,L/2],[-t/2,L/2-t/2],[-t/2,-L/2+t/2]]
+    .map(([x,y]) => `${cx+x},${cy+y}`).join(' ');
+  const cx = W/2, hl = W - 46, vl = 86;
+  const seg = {
+    a:h(cx,16,hl), g:h(cx,H/2,hl), d:h(cx,H-16,hl),
+    f:'16,23 31,38 31,106 1,118 1,38', e:'1,126 31,114 31,194 16,209 1,194',
+    b:'181,23 196,38 196,118 166,106 166,38', c:'196,126 166,114 166,194 181,209 196,194'
+  };
+  // у «2» вертикальные сегменты остаются остроконечными
+  const segPointed = {...seg, f:v(16,66,vl), b:v(W-16,66,vl), e:v(16,H-66,vl), c:v(W-16,H-66,vl)};
+  // у «U» верхние балки чуть длиннее
+  const segU = {...seg, f:'16,11 31,26 31,106 1,118 1,26', b:'181,11 196,26 196,118 166,106 166,26'};
+  const gShort = h(cx-8, H/2, hl-16);   // средняя балка короче справа («3», «4»)
+  const gShortB = h(cx, H/2, hl-32);    // средняя балка короче с обеих сторон («8»)
+  const gShortL = h(cx+8, H/2, hl-16);  // средняя балка короче слева («6»)
+  // какие вертикальные сегменты остроконечные у цифр (как в «2»)
+  const POINTED = {abged:'fbec', fgbc:'f', afgcd:'fc', afgedc:'c', abcdfg:'f', abcdefg:'fbec'};
+  // у «1», «4» правые балки выше (до уровня верха и низа «2» и «3»)
+  const tallR = {b:'181,1 196,16 196,118 166,106 166,16', c:'196,126 166,114 166,216 181,231 196,216'};
+  const TALL = ['bc', 'fgbc'];
+  const tallF4 = '16,1 31,16 31,94 16,109 1,94 1,16';   // левая балка «4» до высоты правой
+  const b7 = '181,31 196,46 196,118 166,106 166,46';   // правая верхняя балка «7» чуть ниже
+  const DIGITS = ['abcdef','bc','abged','abgcd','fgbc','afgcd','afgedc','abc','abcdefg','abcdfg'];
+  const LOGO = ['abcdefq', 'bcdef', 'abged', 'x'];   // Q U 2 X
+
+  // «буква» из сегментов: полигоны a–g, хвост Q и X
+  const makeGlyph = (parent, shapes) => {
+    const el = {shapes};
+    el.root = add('g', {}, parent);
+    for (const k in seg) el[k] = add('polygon', {class:'s', points:shapes[k]}, el.root);
+    // хвост Q: ровно 45°, проходит через правый нижний угол; чёрная обводка даёт одинаковый зазор
+    const q0 = -48, q1 = 50, qc = [156, 203], r2 = Math.SQRT1_2;
+    const qp = [[q0,-t/2],[q1,-t/2],[q1,t/2],[q0,t/2]]
+      .map(([a,b]) => `${qc[0]+(a-b)*r2},${qc[1]+(a+b)*r2}`).join(' ');
+    el.q = add('polygon', {class:'s tail', points:qp}, el.root);
+    // X: четыре диагональных сегмента той же формы и толщины, в центре разрез крестом
+    const xg = add('g', {class:'s'}, el.root);
+    for (const [sx, sy] of [[1,1],[-1,1],[1,-1],[-1,-1]]) {
+      const ox = cx - sx*(cx-4), oy = H/2 - sy*H/2;
+      const D = Math.hypot(ox-cx, oy-H/2), ux = (ox-cx)/D, uy = (oy-H/2)/D, gap = -t;
+      const pts = [[gap,0],[gap+t/2,-t/2],[D-t/2,-t/2],[D,0],[D-t/2,t/2],[gap+t/2,t/2]]
+        .map(([a,b]) => `${cx+a*ux-b*uy},${H/2+a*uy+b*ux}`).join(' ');
+      add('polygon', {points:pts}, xg);
+    }
+    add('line', {class:'cut', style:'stroke-width:17', x1:cx, y1:H/2-125, x2:cx, y2:H/2+125}, xg);
+    add('line', {class:'cut', x1:cx-105, y1:H/2, x2:cx+105, y2:H/2}, xg);
+    el.x = xg;
+    return el;
+  };
+  const setGlyph = (el, spec) => {
+    for (const k of 'abcdefg') el[k].classList.toggle('on', spec.includes(k));
+    // цифра 2 всегда с остроконечными боковыми сегментами, как «2» в логотипе
+    el.g.setAttribute('points', (spec === 'abgcd' || spec === 'fgbc' || spec === 'abcdfg') ? gShort : spec === 'afgedc' ? gShortL : spec === 'abcdefg' ? gShortB : seg.g);
+    for (const k of 'fbec') el[k].setAttribute('points', ((POINTED[spec] || '').includes(k) ? segPointed : el.shapes)[k]);
+    if (TALL.includes(spec)) for (const k of 'bc') el[k].setAttribute('points', tallR[k]);
+    if (spec === 'abc') el.b.setAttribute('points', b7);
+    if (spec === 'abc') el.c.setAttribute('points', tallR.c);   // у «7» нижняя балка до нижней линии, как у «1» и «4»
+    if (spec === 'fgbc') el.f.setAttribute('points', tallF4);
+    el.q.classList.toggle('on', spec.includes('q'));
+    el.x.classList.toggle('on', spec === 'x');
+  };
+
+  // четыре буквы логотипа QU2X
+  const slots = [];
+  for (let i = 0; i < 4; i++) {
+    const shapes = i === 2 ? segPointed : i === 1 ? segU : seg;
+    const grp = add('g', {});
+    grp.style.transform = `translate(${i*STEP}px,0)`;
+    const glyph = makeGlyph(grp, shapes);
+    setGlyph(glyph, LOGO[i]);
+    slots.push(glyph);
+  }
+
+  const tag = document.getElementById('tag');
+  const TARGET = 'BUSINESS SERVICES';
+
+  // общая вертикальная ось: зазор между U и 2, пробел между BUSINESS и SERVICES и «@» стоят на одной линии
+  const mail = document.querySelector('.mail');
+  const axisX = () => { const r = svg.getBoundingClientRect(); return r.left + r.width / 2; };
+  const charRect = (node, i) => {
+    const rg = document.createRange(); rg.setStart(node, i); rg.setEnd(node, i + 1);
+    return rg.getBoundingClientRect();
+  };
+  const alignMail = () => {
+    mail.style.transform = 'none';
+    const ls = parseFloat(getComputedStyle(mail).letterSpacing) || 0;
+    const r = charRect(mail.firstChild, mail.firstChild.data.indexOf('@'));
+    mail.style.transform = `translateX(${axisX() - (r.left + (r.width - ls) / 2)}px)`;
+  };
+  let tagFinal = false;
+  const alignTagFinal = () => {
+    tag.style.transition = 'none'; tag.style.transform = 'none';
+    const ls = parseFloat(getComputedStyle(tag).letterSpacing) || 0, n = tag.firstChild;
+    const i = n.data.indexOf(' ');
+    const gap = (charRect(n, i - 1).right - ls + charRect(n, i + 1).left) / 2;
+    tag.style.transform = `translateX(${axisX() - gap}px)`;
+    void tag.offsetWidth; tag.style.transition = '';
+  };
+  const alignAxes = () => { alignMail(); if (tagFinal) alignTagFinal(); };
+  document.fonts.ready.then(alignAxes);
+  addEventListener('resize', alignAxes);
+
+  tag.textContent = TARGET;
+  tag.style.visibility = 'visible';
+  tagFinal = true;
+  alignAxes();
+})();
+</script>
+</body>
+</html>
