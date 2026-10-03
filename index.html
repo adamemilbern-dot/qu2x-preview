@@ -41,7 +41,7 @@
   <h1 id="tag" aria-label="Business Services">BUSINESS SERVICES</h1>
 </main>
 <footer>
-  <span class="mail">contact@qu<span class="d">2</span>x.com</span>
+  <span class="mail">qu<span class="d">2</span>x@proton.me</span>
   <hr>
   <small>© 2026 QU2X. All rights reserved.</small>
 </footer>
@@ -144,7 +144,10 @@
   const alignMail = () => {
     mail.style.transform = 'none';
     const ls = parseFloat(getComputedStyle(mail).letterSpacing) || 0;
-    const r = charRect(mail.firstChild, mail.firstChild.data.indexOf('@'));
+    // текстовый узел, в котором стоит «@»
+    const w = document.createTreeWalker(mail, NodeFilter.SHOW_TEXT);
+    let n; while ((n = w.nextNode()) && !n.data.includes('@'));
+    const r = charRect(n, n.data.indexOf('@'));
     mail.style.transform = `translateX(${axisX() - (r.left + (r.width - ls) / 2)}px)`;
   };
   let tagFinal = false;
